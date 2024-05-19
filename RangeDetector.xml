@@ -1,0 +1,46 @@
+<Ui>
+	<Script file="RangeDetector.lua"/>
+	<Frame name="RangeDetector" toplevel="true" movable="true" enableMouse="true" hidden="false" parent="UIParent">
+		<Size>
+			<AbsDimension x="30" y="30" />
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER">
+			<Offset>
+				<AbsDimension x="0" y="0" />
+			</Offset>
+			</Anchor>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				this:RegisterForDrag("LeftButton");
+
+				this:ClearAllPoints()
+				this:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				this:SetWidth(30)
+				this:SetHeight(30)
+
+				this.texture = this:CreateTexture()
+				this.texture:SetAllPoints(this)
+				this.texture:SetTexture(1, 0, 0, 0.5)
+
+				function checkRange(obj)
+					if IsActionInRange(60) == 1 then
+						obj.texture:SetTexture(0, 1, 0, 0.5);
+					else
+						obj.texture:SetTexture(1, 0, 0, 0.5);
+					end
+				end
+
+				function lostTarget(obj)
+					obj.texture:SetTexture(1, 0, 0, 0.2);
+				end
+
+				eventEmitter:AddSubscriber("TARGET_CHANGED", this:GetName(), checkRange, this)
+				eventEmitter:AddSubscriber("TARGET_LOST", this:GetName(), lostTarget, this)
+			</OnLoad>
+			<OnDragStart>this:StartMoving();</OnDragStart>
+			<OnDragStop>this:StopMovingOrSizing()</OnDragStop>
+		</Scripts>
+	</Frame>
+</Ui>
