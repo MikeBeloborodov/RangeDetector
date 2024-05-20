@@ -1,6 +1,10 @@
 # RangeDetector
 Vanilla 1.12.1 addon for World of Warcraft that shows if your skill is in range with a red or a green rectangle.
 
+You need to define an action slot of your skill.</br>
+
+About action slots: https://wowwiki-archive.fandom.com/wiki/ActionSlot
+
 ![](./screenshot.jpg)
 
 ## Installation
