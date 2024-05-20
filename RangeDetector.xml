@@ -150,6 +150,7 @@
 						local newValue = this:GetValue()
 						RangeDetector:SetWidth(newValue)
 						RangeDetector:SetHeight(newValue)
+						RangeDetector.size = tonumber(newValue)
 						rdt_size = tonumber(newValue)
 					</OnValueChanged>
         		</Scripts>
