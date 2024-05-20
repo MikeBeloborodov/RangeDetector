@@ -1,16 +1,20 @@
 <Ui>
 	<Script file="RangeDetector.lua"/>
+
+	<!-- Main frame -->
 	<Frame name="RangeDetector" toplevel="true" movable="true" enableMouse="true" hidden="false" parent="UIParent">
 		<Size>
 			<AbsDimension x="30" y="30" />
 		</Size>
+
 		<Anchors>
 			<Anchor point="CENTER">
-			<Offset>
-				<AbsDimension x="0" y="0" />
-			</Offset>
+				<Offset>
+					<AbsDimension x="0" y="0" />
+				</Offset>
 			</Anchor>
 		</Anchors>
+
 		<Scripts>
 			<OnLoad>
 				this:RegisterForDrag("LeftButton");
@@ -25,6 +29,8 @@
 				this.texture:SetTexture(1, 0, 0, 0.5)
 
 				function checkRange(obj)
+					if UnitIsFriend("target", "player") then return end
+					if UnitHealth("target") == 0 then return end
 					if IsActionInRange(60) == 1 then
 						obj.texture:SetTexture(0, 1, 0, 0.5);
 					else
@@ -41,6 +47,218 @@
 			</OnLoad>
 			<OnDragStart>this:StartMoving();</OnDragStart>
 			<OnDragStop>this:StopMovingOrSizing()</OnDragStop>
+		</Scripts>
+	</Frame>
+
+	<!-- Menu frame -->
+	<Frame name="MenuFrame" toplevel="true" movable="true" enableMouse="true" hidden="true" parent="UIParent">
+		<Size>
+			<AbsDimension x="250" y="300" />
+		</Size>
+
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+
+		<Backdrop bgFile="Interface\TutorialFrame\TutorialFrameBackground" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<EdgeSize val="32" />
+			<TileSize val="64" />
+			<BackgroundInsets left="5" right="5" top="5" bottom="5" />
+		</Backdrop>
+
+		<Layers>
+			<Layer>
+				<FontString name="MenuFrame_settings_text" inherits="GameFontNormal" text="Range Detector settings">
+					<Size x="100" y="32" />
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset x="0" y="-20" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<Slider name="SizeSlider" orientation="HORIZONTAL" enableMouse="true" minValue="10" maxValue="100" valueStep="10" defaultValue="30">
+				<Size>
+					<AbsDimension x="180" y="17"/>
+				</Size>
+
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="30" y="-90" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+
+				<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+					<EdgeSize>
+						<AbsValue val="8"/>
+					</EdgeSize>
+					<TileSize>
+						<AbsValue val="8"/>
+					</TileSize>
+					<BackgroundInsets>
+						<AbsInset left="3" right="3" top="6" bottom="6"/>
+					</BackgroundInsets>
+				</Backdrop>
+
+				<ThumbTexture name="mysliderthumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
+					<Size>
+						<AbsDimension x="32" y="32"/>
+					</Size>
+				</ThumbTexture>
+
+				<Layers>
+					<Layer>
+						<FontString name="Slider_size" inherits="GameFontNormalSmall" text="Size:">
+							<Size x="50" y="32" />
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="0" y="30" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnValueChanged>
+						local newValue = this:GetValue()
+						RangeDetector:SetWidth(newValue)
+						RangeDetector:SetHeight(newValue)
+					</OnValueChanged>
+        		</Scripts>
+			</Slider>
+
+			<EditBox name="SkillEditBox" autoFocus="false">
+				<Size>
+					<AbsDimension x="270" y="17"/>
+				</Size>
+
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="40" y="-150" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+							<Size x="80" y="30" />
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset x="-20" y="0" />
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.2" top="0" bottom="1.0"/>
+						</Texture>
+						<Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+							<Size x="120" y="30" />
+							<Anchors>
+								<Anchor point="RIGHT">
+									<Offset x="-90" y="0" />
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.7" right="1.0" top="0" bottom="1.0"/>
+						</Texture>
+        			</Layer>
+
+					<Layer>
+						<FontString name="Slider_size" inherits="GameFontNormalSmall" text="Trigger skill:">
+							<Size x="100" y="32" />
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="-20" y="35" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+      			<FontString inherits="GameFontNormal">
+					<Color r="1" g="1" b="1" a="1" />
+				</FontString>
+			</EditBox>
+
+			<Button name="SkillEditButton">
+				<Size>
+					<AbsDimension x="65" y="35" />
+				</Size>
+
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="-50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+
+				<NormalTexture file="Interface\Buttons\UI-DialogBox-Button-Up" />
+				<PushedTexture file="Interface\Buttons\UI-DialogBox-Button-Down" />
+				<HighlightTexture file="Interface\Buttons\UI-DialogBox-Button-Highlight" alphaMode="ADD" />
+
+				<Layers>
+					<Layer>
+						<FontString name="SkillEditOkText" inherits="GameFontNormalSmall" text="OK">
+							<Size x="100" y="32" />
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset x="0" y="5" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnMouseDown>SkillEditBox:ClearFocus()</OnMouseDown>
+				</Scripts>
+			</Button>
+
+			<Button name="CloseMenuButton">
+				<Size>
+					<AbsDimension x="75" y="35" />
+				</Size>
+
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-20" y="10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+
+				<NormalTexture file="Interface\Buttons\UI-DialogBox-Button-Up" />
+				<PushedTexture file="Interface\Buttons\UI-DialogBox-Button-Down" />
+				<HighlightTexture file="Interface\Buttons\UI-DialogBox-Button-Highlight" alphaMode="ADD" />
+
+				<Layers>
+					<Layer>
+						<FontString name="CloseMenuButtonText" inherits="GameFontNormalSmall" text="Close">
+							<Size x="100" y="32" />
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset x="0" y="5" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnMouseUp>this:GetParent():Hide()</OnMouseUp>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>this:RegisterForDrag("LeftButton");</OnLoad>
+			<OnDragStart>this:StartMoving();</OnDragStart>
+			<OnDragStop>this:StopMovingOrSizing();</OnDragStop>
 		</Scripts>
 	</Frame>
 </Ui>

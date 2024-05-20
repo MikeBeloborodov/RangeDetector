@@ -12,23 +12,11 @@ end
 
 SLASH_RDT1 = "/rdt"
 SlashCmdList["RDT"] = function(msg)
-	local name = RangeDetector:GetName()
-	local height = RangeDetector:GetHeight()
-	local width = RangeDetector:GetWidth()
-	local point, relativeTo, relativePoint, xOfs, yOfs = RangeDetector:GetPoint()
-	PrintRed("name: " .. tostring(name))
-	PrintRed("height: " .. tostring(height))
-	PrintRed("width: " .. tostring(width))
-	PrintRed("point: " .. tostring(point))
-	PrintRed("relativeTo: " .. tostring(relativeTo))
-	PrintRed("relativePoint: " .. tostring(relativePoint))
-	PrintRed("xOfs: " .. tostring(xOfs))
-	PrintRed("yOfs: " .. tostring(yOfs))
-
-	if (msg) then
-		RangeDetector:ClearAllPoints()
-		RangeDetector:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	end
+	--local name = RangeDetector:GetName()
+	--local height = RangeDetector:GetHeight()
+	--local width = RangeDetector:GetWidth()
+	--local point, relativeTo, relativePoint, xOfs, yOfs = RangeDetector:GetPoint()
+	MenuFrame:Show()
 end
 
 SLASH_RELOAD1 = "/reload"
@@ -43,8 +31,10 @@ function eventEmitter:AddSubscriber(event, sub, callback, arg)
 	self.Events[event][sub] = {callback = callback, arg = arg}
 end
 function eventEmitter:EmitEvent(event)
-	for _, subscriber in pairs(self.Events[event]) do
-		subscriber.callback(subscriber.arg)
+	if eventEmitter.HasTarget then
+		for _, subscriber in pairs(self.Events[event]) do
+			subscriber.callback(subscriber.arg)
+		end
 	end
 end
 eventEmitter:SetScript("OnUpdate", 
