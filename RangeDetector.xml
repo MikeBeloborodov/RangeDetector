@@ -16,13 +16,31 @@
 		</Anchors>
 
 		<Scripts>
+			<OnEvent>
+				if event == "ADDON_LOADED" then
+					if rdt_slot then
+						this.slot = rdt_slot
+					else
+						this.slot = 0
+						rdt_slot = 0
+					end
+
+					if rdt_size then
+						this.size = rdt_size
+					else
+						this.size = 30
+						rdt_size = 30
+					end
+
+					this:ClearAllPoints()
+					this:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					this:SetWidth(this.size)
+					this:SetHeight(this.size)
+				end
+			</OnEvent>
 			<OnLoad>
 				this:RegisterForDrag("LeftButton");
-
-				this:ClearAllPoints()
-				this:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-				this:SetWidth(30)
-				this:SetHeight(30)
+				this:RegisterEvent("ADDON_LOADED")
 
 				this.texture = this:CreateTexture()
 				this.texture:SetAllPoints(this)
@@ -31,7 +49,7 @@
 				function checkRange(obj)
 					if UnitIsFriend("target", "player") then return end
 					if UnitHealth("target") == 0 then return end
-					if IsActionInRange(60) == 1 then
+					if IsActionInRange(obj.slot) == 1 then
 						obj.texture:SetTexture(0, 1, 0, 0.5);
 					else
 						obj.texture:SetTexture(1, 0, 0, 0.5);
@@ -125,15 +143,19 @@
 				</Layers>
 
 				<Scripts>
+					<OnShow>
+						this:SetValue(RangeDetector.size)
+					</OnShow>
 					<OnValueChanged>
 						local newValue = this:GetValue()
 						RangeDetector:SetWidth(newValue)
 						RangeDetector:SetHeight(newValue)
+						rdt_size = tonumber(newValue)
 					</OnValueChanged>
         		</Scripts>
 			</Slider>
 
-			<EditBox name="SkillEditBox" autoFocus="false">
+			<EditBox name="ActionSlotEdit" autoFocus="false">
 				<Size>
 					<AbsDimension x="270" y="17"/>
 				</Size>
@@ -169,7 +191,7 @@
         			</Layer>
 
 					<Layer>
-						<FontString name="Slider_size" inherits="GameFontNormalSmall" text="Trigger skill:">
+						<FontString name="ActionSlotEditText" inherits="GameFontNormalSmall" text="Action slot:">
 							<Size x="100" y="32" />
 							<Anchors>
 								<Anchor point="TOPLEFT">
@@ -183,9 +205,13 @@
       			<FontString inherits="GameFontNormal">
 					<Color r="1" g="1" b="1" a="1" />
 				</FontString>
+
+				<Scripts>
+					<OnShow>this:SetText(tostring(RangeDetector.slot))</OnShow>
+				</Scripts>
 			</EditBox>
 
-			<Button name="SkillEditButton">
+			<Button name="ActionSlotEditButton">
 				<Size>
 					<AbsDimension x="65" y="35" />
 				</Size>
@@ -204,7 +230,7 @@
 
 				<Layers>
 					<Layer>
-						<FontString name="SkillEditOkText" inherits="GameFontNormalSmall" text="OK">
+						<FontString name="ActionSlotEditOkText" inherits="GameFontNormalSmall" text="OK">
 							<Size x="100" y="32" />
 							<Anchors>
 								<Anchor point="CENTER">
@@ -216,7 +242,11 @@
 				</Layers>
 
 				<Scripts>
-					<OnMouseDown>SkillEditBox:ClearFocus()</OnMouseDown>
+					<OnMouseDown>
+						ActionSlotEdit:ClearFocus()
+						RangeDetector.slot = tonumber(ActionSlotEdit:GetText())
+						rdt_slot = tonumber(ActionSlotEdit:GetText())
+					</OnMouseDown>
 				</Scripts>
 			</Button>
 

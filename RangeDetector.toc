@@ -2,4 +2,5 @@
 ## Title: Range Detector
 ## Notes: Tool to detect if your skill is in range.
 ## Author: MikeBeloborodov
+## SavedVariablesPerCharacter: rdt_slot, rdt_size
 RangeDetector.xml
