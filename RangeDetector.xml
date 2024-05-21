@@ -25,6 +25,16 @@
 						rdt_slot = 0
 					end
 
+					if rdt_x and rdt_y then
+						this.ofsx = rdt_x
+						this.ofsy = rdt_y
+					else
+						this.ofsx = 0
+						this.ofsy = 0
+						rdt_x = 0
+						rdt_y = 0
+					end
+
 					if rdt_size then
 						this.size = rdt_size
 					else
@@ -33,7 +43,7 @@
 					end
 
 					this:ClearAllPoints()
-					this:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					this:SetPoint("CENTER", UIParent, "CENTER", this.ofsx, this.ofxy)
 					this:SetWidth(this.size)
 					this:SetHeight(this.size)
 				end
@@ -64,7 +74,15 @@
 				eventEmitter:AddSubscriber("TARGET_LOST", this:GetName(), lostTarget, this)
 			</OnLoad>
 			<OnDragStart>this:StartMoving();</OnDragStart>
-			<OnDragStop>this:StopMovingOrSizing()</OnDragStop>
+			<OnDragStop>
+				this:StopMovingOrSizing()
+			
+				local point, relativeTo, relativePoint, xOfs, yOfs = RangeDetector:GetPoint()
+				rdt_x = xOfs
+				rdt_y = yOfs
+				this.ofsx = xOfs
+				this.ofsy = yOfs
+			</OnDragStop>
 		</Scripts>
 	</Frame>
 
