@@ -7,17 +7,25 @@
 			<AbsDimension x="30" y="30" />
 		</Size>
 
-		<Anchors>
-			<Anchor point="CENTER">
-				<Offset>
-					<AbsDimension x="0" y="0" />
-				</Offset>
-			</Anchor>
-		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parent_bg">
+					<Size x="30" y="30" />
+
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="0" y="0" />
+						</Anchor>
+					</Anchors>
+
+					<Color r="1" g="0" b="0" a="0.2" />
+				</Texture>
+			</Layer>
+		</Layers>
 
 		<Scripts>
 			<OnEvent>
-				if event == "ADDON_LOADED" then
+				if event == "ADDON_LOADED" and not hasAddonBeenLoaded then
 					if rdt_slot then
 						this.slot = rdt_slot
 					else
@@ -46,32 +54,16 @@
 					this:SetPoint("CENTER", UIParent, "CENTER", this.ofsx, this.ofxy)
 					this:SetWidth(this.size)
 					this:SetHeight(this.size)
+
+					hasAddonBeenLoaded = true
 				end
 			</OnEvent>
 			<OnLoad>
 				this:RegisterForDrag("LeftButton");
 				this:RegisterEvent("ADDON_LOADED")
 
-				this.texture = this:CreateTexture()
-				this.texture:SetAllPoints(this)
-				this.texture:SetTexture(1, 0, 0, 0.5)
-
-				function checkRange(obj)
-					if UnitIsFriend("target", "player") then return end
-					if UnitHealth("target") == 0 then return end
-					if IsActionInRange(obj.slot) == 1 then
-						obj.texture:SetTexture(0, 1, 0, 0.5);
-					else
-						obj.texture:SetTexture(1, 0, 0, 0.5);
-					end
-				end
-
-				function lostTarget(obj)
-					obj.texture:SetTexture(1, 0, 0, 0.2);
-				end
-
-				eventEmitter:AddSubscriber("TARGET_CHANGED", this:GetName(), checkRange, this)
-				eventEmitter:AddSubscriber("TARGET_LOST", this:GetName(), lostTarget, this)
+				eventEmitter:AddSubscriber("TARGET_CHANGED", this:GetName(), checkRange)
+				eventEmitter:AddSubscriber("TARGET_LOST", this:GetName(), lostTarget)
 			</OnLoad>
 			<OnDragStart>this:StartMoving();</OnDragStart>
 			<OnDragStop>
