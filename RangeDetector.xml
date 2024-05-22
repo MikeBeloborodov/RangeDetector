@@ -2,7 +2,7 @@
 	<Script file="RangeDetector.lua"/>
 
 	<!-- Main frame -->
-	<Frame name="RangeDetector" toplevel="true" movable="true" enableMouse="true" hidden="false" parent="UIParent">
+	<Frame name="RangeDetector" toplevel="true" movable="true" enableMouse="true" hidden="true" parent="UIParent">
 		<Size>
 			<AbsDimension x="30" y="30" />
 		</Size>
@@ -24,57 +24,11 @@
 		</Layers>
 
 		<Scripts>
-			<OnEvent>
-				if event == "ADDON_LOADED" and not hasAddonBeenLoaded then
-					if rdt_slot then
-						this.slot = rdt_slot
-					else
-						this.slot = 0
-						rdt_slot = 0
-					end
-
-					if rdt_x and rdt_y then
-						this.ofsx = rdt_x
-						this.ofsy = rdt_y
-					else
-						this.ofsx = 0
-						this.ofsy = 0
-						rdt_x = 0
-						rdt_y = 0
-					end
-
-					if rdt_size then
-						this.size = rdt_size
-					else
-						this.size = 30
-						rdt_size = 30
-					end
-
-					this:ClearAllPoints()
-					this:SetPoint("CENTER", UIParent, "CENTER", this.ofsx, this.ofxy)
-					this:SetWidth(this.size)
-					this:SetHeight(this.size)
-
-					hasAddonBeenLoaded = true
-				end
-			</OnEvent>
-			<OnLoad>
-				this:RegisterForDrag("LeftButton");
-				this:RegisterEvent("ADDON_LOADED")
-
-				eventEmitter:AddSubscriber("TARGET_CHANGED", this:GetName(), checkRange)
-				eventEmitter:AddSubscriber("TARGET_LOST", this:GetName(), lostTarget)
-			</OnLoad>
-			<OnDragStart>this:StartMoving();</OnDragStart>
-			<OnDragStop>
-				this:StopMovingOrSizing()
-			
-				local point, relativeTo, relativePoint, xOfs, yOfs = RangeDetector:GetPoint()
-				rdt_x = xOfs
-				rdt_y = yOfs
-				this.ofsx = xOfs
-				this.ofsy = yOfs
-			</OnDragStop>
+			<OnEvent>RangeDetector_OnEvent()</OnEvent>
+			<OnLoad>RangeDetector_OnLoad()</OnLoad>
+			<OnUpdate>RangeDetector_OnUpdate()</OnUpdate>
+			<OnDragStart>this:StartMoving()</OnDragStart>
+			<OnDragStop>RangeDetector_OnDragStop()</OnDragStop>
 		</Scripts>
 	</Frame>
 
@@ -153,16 +107,8 @@
 				</Layers>
 
 				<Scripts>
-					<OnShow>
-						this:SetValue(RangeDetector.size)
-					</OnShow>
-					<OnValueChanged>
-						local newValue = this:GetValue()
-						RangeDetector:SetWidth(newValue)
-						RangeDetector:SetHeight(newValue)
-						RangeDetector.size = tonumber(newValue)
-						rdt_size = tonumber(newValue)
-					</OnValueChanged>
+					<OnShow>this:SetValue(RangeDetector.size)</OnShow>
+					<OnValueChanged>MenuFrame_OnValueChanged()</OnValueChanged>
         		</Scripts>
 			</Slider>
 
@@ -292,7 +238,7 @@
 				</Layers>
 
 				<Scripts>
-					<OnMouseUp>this:GetParent():Hide()</OnMouseUp>
+					<OnMouseUp>MenuFrameButton_OnClose()</OnMouseUp>
 				</Scripts>
 			</Button>
 		</Frames>

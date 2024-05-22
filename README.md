@@ -6,6 +6,7 @@ You need to define an action slot of your skill.</br>
 About action slots: https://wowwiki-archive.fandom.com/wiki/ActionSlot
 
 ![](./screenshot.jpg)
+![](./rangedetector.gif)
 
 ## Installation
 1. Download **[Latest Version](https://github.com/MikeBeloborodov/RangeDetector/archive/refs/heads/main.zip)**
